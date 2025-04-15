@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Samuel Duilany - Portfolio</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts: Poppins -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        margin-bottom: 60px;
+        color: #333;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Canvas for background animation */
+      #backgroundCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* Place canvas behind all content */
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 100%
+        ); /* Dark gradient background */
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .animate-fade {
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      .animate-slide {
+        animation: slideIn 1s ease-in-out;
+      }
+
+      .navbar {
+        background: linear-gradient(90deg, #2c3e50, #4b6cb7);
+        padding: 15px 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 10; /* Ensure navbar is above the canvas */
+      }
+
+      .navbar .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5em;
+        background: linear-gradient(90deg, #ffd700, #ffffff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        transition: background 0.3s ease;
+      }
+
+      .navbar .navbar-brand:hover {
+        background: linear-gradient(90deg, #ffffff, #ffd700);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .navbar .nav-link {
+        color: white !important;
+        font-weight: 600;
+        transition: transform 0.3s ease, color 0.3s ease;
+      }
+
+      .navbar .nav-link:hover {
+        color: #ffd700 !important;
+        transform: scale(1.1);
+      }
+
+      .home {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 1; /* Ensure home section is above the canvas */
+      }
+
+      .home .container {
+        max-width: 1200px;
+      }
+
+      .home img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 15px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        animation: float 3s ease-in-out infinite;
+        transition: transform 0.3s ease;
+      }
+
+      .home img:hover {
+        transform: scale(1.05) rotate(5deg);
+      }
+
+      .home .text-content {
+        padding-left: 30px;
+        color: #fff; /* Change text color to white for better contrast */
+      }
+
+      .home h1 {
+        font-size: 2.8em;
+        margin-bottom: 10px;
+        font-weight: 700;
+        color: #fff; /* Change to white for better contrast */
+      }
+
+      .home p {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .content-section {
+        display: none;
+        padding: 40px 20px;
+        background: rgba(
+          255,
+          255,
+          255,
+          0.03
+        ); /* Semi-transparent background for sections */
+        backdrop-filter: blur(1px); /* Optional: Add blur effect */
+        margin: 20px auto;
+        border-radius: 15px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        position: relative;
+        z-index: 1; /* Ensure sections are above the canvas */
+        color: #fff; /* Change text color to white for better contrast */
+      }
+
+      .content-section.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .content-section h2 {
+        color: #fff; /* Change to white for better contrast */
+        border-bottom: 3px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .experience-item,
+      .project-item {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-left: 4px solid #3498db;
+        border-radius: 8px;
+        transition: background 0.3s ease;
+        cursor: pointer;
+      }
+
+      .experience-item:hover,
+      .project-item:hover {
+        background: rgba(
+          255,
+          255,
+          255,
+          0.2
+        ); /* Slightly lighter background on hover */
+      }
+
+      .experience-details,
+      .project-details {
+        display: none;
+        margin-top: 10px;
+        padding-left: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .experience-details.active,
+      .project-details.active {
+        display: block;
+      }
+
+      .project-images {
+        margin-top: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .project-images img {
+        max-width: 200px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        animation: float 3s ease-in-out infinite;
+        transition: transform 0.3s ease;
+        display: none;
+      }
+
+      .project-images img:first-child {
+        display: block;
+      }
+
+      .project-images img:hover {
+        transform: scale(1.05);
+      }
+
+      .see-more {
+        color: #3498db;
+        text-decoration: none;
+        margin-left: 10px;
+        font-size: 0.9em;
+        transition: color 0.3s ease;
+      }
+
+      .see-more:hover {
+        color: #ffd700;
+        text-decoration: underline;
+      }
+
+      .image-container {
+        display: flex;
+        align-items: center;
+        margin-top: 15px;
+      }
+
+      /* Modal Gallery Styles */
+      .gallery-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .gallery-modal.active {
+        display: flex;
+      }
+
+      .gallery-modal .gallery-content {
+        position: relative;
+        max-width: 90%;
+        max-height: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .gallery-modal .gallery-title {
+        color: white;
+        font-size: 1.5em;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .gallery-modal img {
+        max-width: 100%;
+        max-height: 65vh;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .gallery-modal .gallery-counter {
+        color: white;
+        font-size: 1em;
+        font-weight: 400;
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .gallery-modal .close-btn {
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        color: white;
+        font-size: 2em;
+        cursor: pointer;
+        background: none;
+        border: none;
+      }
+
+      .gallery-modal .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        font-size: 2em;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 10px;
+      }
+
+      .gallery-modal .prev-btn {
+        left: -50px;
+      }
+
+      .gallery-modal .next-btn {
+        right: -50px;
+      }
+
+      .gallery-modal .nav-btn:hover {
+        color: #ffd700;
+      }
+
+      @media (max-width: 768px) {
+        .gallery-modal .nav-btn {
+          font-size: 1.5em;
+        }
+
+        .gallery-modal .prev-btn {
+          left: 10px;
+        }
+
+        .gallery-modal .next-btn {
+          right: 10px;
+        }
+
+        .gallery-modal .close-btn {
+          top: 10px;
+          right: 10px;
+        }
+
+        .gallery-modal .gallery-title {
+          font-size: 1.2em;
+          margin-bottom: 10px;
+        }
+
+        .gallery-modal .gallery-counter {
+          font-size: 0.9em;
+          margin-top: 10px;
+        }
+
+        .gallery-modal img {
+          max-height: 55vh;
+        }
+      }
+
+      /* Styling untuk Skills Section */
+      .skills-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .skills-section h3 {
+        color: #fff; /* Change to white for better contrast */
+        font-size: 1.5em;
+        font-weight: 600;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #8e44ad; /* Warna ungu seperti pada gambar */
+        padding-bottom: 5px;
+      }
+
+      .skill-item {
+        margin-bottom: 10px;
+      }
+
+      .skill-item span {
+        font-weight: 500;
+        color: #fff; /* Change to white for better contrast */
+        display: inline; /* Ensure skills are in a single line */
+      }
+
+      /* Remove progress bar styles since we no longer need them */
+      .progress,
+      .progress-bar {
+        display: none;
+      }
+
+      .education-content {
+        text-align: center;
+      }
+
+      .education-content img {
+        max-width: 100%;
+        width: 500px;
+        height: auto;
+        border-radius: 15px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        animation: float 3s ease-in-out infinite;
+        transition: transform 0.3s ease;
+        margin-top: 20px;
+      }
+
+      .education-content img:hover {
+        transform: scale(1.05);
+      }
+
+      .experience-content {
+        display: none;
+      }
+
+      .experience-content.active {
+        display: block;
+      }
+
+      /* Styling for Certificate Cards */
+      .certification-content {
+        margin-top: 30px;
+      }
+
+      .certificate-card {
+        background: #2a2a3e; /* Dark background similar to the screenshot */
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+        text-align: left;
+        padding-bottom: 15px;
+      }
+
+      .certificate-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .certificate-img {
+        width: 100%;
+        height: 200px; /* Adjust height as needed */
+        object-fit: cover; /* Ensure the image scales properly */
+        border-bottom: 2px solid #3498db; /* Blue border under the image */
+        animation: none; /* Remove floating animation */
+        cursor: pointer; /* Add cursor pointer to indicate clickability */
+      }
+
+      .certificate-img:hover {
+        transform: scale(1.05); /* Slight zoom on hover */
+      }
+
+      .certificate-info {
+        padding: 15px;
+      }
+
+      .certificate-info h3 {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 5px;
+      }
+
+      .certificate-info p {
+        font-size: 0.9em;
+        color: #ccc;
+        margin-bottom: 10px;
+      }
+
+      .btn-view-certificate {
+        display: inline-flex;
+        align-items: center;
+        background: #8e44ad; /* Purple button color */
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: background 0.3s ease;
+      }
+
+      .btn-view-certificate:hover {
+        background: #9b59b6; /* Lighter purple on hover */
+      }
+
+      .btn-view-certificate i {
+        margin-left: 5px;
+      }
+
+      /* Responsive adjustments for Certificates */
+      @media (max-width: 768px) {
+        .certificate-img {
+          height: 150px; /* Smaller height for mobile */
+        }
+
+        .certificate-info h3 {
+          font-size: 1em;
+        }
+
+        .certificate-info p {
+          font-size: 0.8em;
+        }
+
+        .btn-view-certificate {
+          font-size: 0.8em;
+          padding: 6px 12px;
+        }
+      }
+
+      footer {
+        background: linear-gradient(90deg, #2c3e50, #4b6cb7);
+        color: white;
+        padding: 15px 0;
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 10; /* Ensure footer is above the canvas */
+      }
+
+      footer a {
+        color: #ffd700;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 1em;
+        position: relative;
+        transition: color 0.3s ease;
+      }
+
+      footer a:hover {
+        color: #ffffff;
+      }
+
+      footer a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        background: #ffffff;
+        bottom: -2px;
+        left: 0;
+        transition: width 0.3s ease;
+      }
+
+      footer a:hover::after {
+        width: 100%;
+      }
+
+      footer .contact-info i {
+        margin-right: 8px;
+        font-size: 1.2em;
+        vertical-align: middle;
+      }
+
+      @media (max-width: 768px) {
+        .home {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .home .text-content {
+          padding-left: 0;
+          padding-top: 20px;
+        }
+
+        .home h1 {
+          font-size: 2em;
+        }
+
+        footer a {
+          display: inline-block;
+          margin: 5px 10px;
+        }
+
+        .content-section {
+          padding: 20px 10px;
+        }
+
+        .education-content img {
+          width: 100%;
+        }
+
+        .project-images img {
+          max-width: 100%;
+        }
+
+        .skills-section {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Canvas for Background Animation -->
+    <canvas id="backgroundCanvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand text-white" href="#home">Samuel Duilany</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#home" data-section="home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about" data-section="about"
+                >About Me</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#education" data-section="education"
+                >Education</a
+              >
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#experience"
+                id="experienceDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Experience
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="experienceDropdown">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#experience"
+                    data-section="experience"
+                    data-experience="work"
+                  >
+                    Work Experience
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#experience"
+                    data-section="experience"
+                    data-experience="organizational"
+                  >
+                    Organizational Experience
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#projects" data-section="projects"
+                >Projects</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#skills" data-section="skills"
+                >Skills</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#achievements"
+                data-section="achievements"
+                >Achievements</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="home content-section active">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <img
+              src="assetporto/profil.jpeg"
+              alt="Samuel Duilany"
+              class="animate-fade"
+            />
+          </div>
+          <div class="col-md-6 text-content">
+            <h1 class="animate-fade">Welcome to My Portfolio</h1>
+            <p class="animate-fade">
+              Hi, I'm Samuel Duilany Parreira Sibarani.
+            </p>
+            <p class="animate-fade">
+              Explore my journey in technology, projects, and skills. Dive into
+              my work and discover how I create innovative solutions through Web
+              Development, Android Development, and Machine Learning.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="content-section">
+      <h2 class="animate-fade">About Me</h2>
+      <p class="animate-fade">
+        I am an Informatics student at Del Institute of Technology with a strong
+        passion for technology. My name is Samuel Duilany Parreira Sibarani, I
+        am male, and I was born in Sitoluama on January 1, 2003. I have a deep
+        interest in Web Development, Android Development, and Machine Learning,
+        and I love exploring new technologies and building innovative solutions.
+        Besides studying and working on tech projects, I have several hobbies
+        that I enjoy in my free time. I love playing soccer, basketball, and
+        other sports because these activities keep me active and healthy. In my
+        daily life, I usually spend my time studying, coding, and sometimes
+        playing games to unwind. I am a person who loves challenges and always
+        strives to give my best in everything I do.
+      </p>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="content-section">
+      <h2 class="animate-fade">Education</h2>
+      <div class="education-content">
+        <div class="experience-item animate-slide">
+          <h3>Del Institute of Technology - Sitoluama, Indonesia</h3>
+          <p>Bachelor Degree in Informatics (GPA: 3.29/4.00)</p>
+          <p>Aug 2022 - Present</p>
+        </div>
+        <img
+          src="assetporto/campus.jpg"
+          alt="Del Institute of Technology Campus"
+          class="animate-fade"
+        />
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="content-section">
+      <h2 class="animate-fade">Experience</h2>
+
+      <!-- Work Experience -->
+      <div id="work-experience" class="experience-content">
+        <h3 class="animate-fade">Work Experience</h3>
+        <div class="experience-item animate-slide">
+          <h4>
+            Website Developer - Indonesian Professional Certification Authority
+          </h4>
+          <p>Jul 2024</p>
+          <ul class="experience-details">
+            <li>Developed and executed programming commands</li>
+            <li>Collaborated with teams for web solutions</li>
+            <li>Designed structured programming logic</li>
+          </ul>
+        </div>
+        <div class="experience-item animate-slide">
+          <h4>Participant - Samsung Innovation Campus</h4>
+          <p>December 2024</p>
+          <ul class="experience-details">
+            <li>
+              Participated in intensive training on technology and innovation
+            </li>
+            <li>
+              Learned the basics of programming and application development
+            </li>
+            <li>
+              Collaborated on team projects to solve technology challenges
+            </li>
+          </ul>
+        </div>
+        <div class="experience-item animate-slide">
+          <h4>Participant - Elevate by Microsoft</h4>
+          <p>Jan 2025 - Present</p>
+          <ul class="experience-details">
+            <li>Engaged in advanced technology skills development program</li>
+            <li>Learned cloud and AI technologies from Microsoft</li>
+            <li>Worked on cloud-based projects to enhance technical skills</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Organizational Experience -->
+      <div id="organizational-experience" class="experience-content">
+        <h3 class="animate-fade">Organizational Experience</h3>
+        <div class="experience-item animate-slide">
+          <h4>Member - Informatics Student Association</h4>
+          <p>Aug 2022 - Present</p>
+          <ul class="experience-details">
+            <li>Actively engaged in various student activities</li>
+            <li>Provided innovative ideas for programs</li>
+          </ul>
+        </div>
+        <div class="experience-item animate-slide">
+          <h4>Member - Department of Facilities and Infrastructure</h4>
+          <p>Jul 2023 - Present</p>
+          <ul class="experience-details">
+            <li>Supervised campus facility maintenance</li>
+            <li>Assisted in infrastructure projects</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="content-section">
+      <h2 class="animate-fade">Projects</h2>
+      <div class="project-item animate-slide">
+        <h3>Web PKM SMA Negeri 1 Balige</h3>
+        <a
+          href="https://github.com/delcom-id/pabwe-pkm-proyek-2024-k3.git"
+          target="_blank"
+          ><i class="fab fa-github"></i>GitHub</a
+        >
+        <p>Full-Stack Web Developer</p>
+        <ul class="project-details">
+          <li>
+            Built a responsive school website using HTML, CSS, JavaScript, and
+            Laravel
+          </li>
+          <li>
+            Online Admission: Developed a digital PPDB system for student
+            registration
+          </li>
+          <li>
+            User Admin Management: Implemented role-based access control for
+            content management and user authentication
+          </li>
+        </ul>
+        <div class="image-container">
+          <div class="project-images" data-project="pkm">
+            <img
+              src="assetporto/project1/pkm3.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 1"
+              class="project-image"
+            />
+            <img
+              src="assetporto/project1/pkm2.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 2"
+            />
+            <img
+              src="assetporto/project1/pkm4.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 3"
+            />
+            <img
+              src="assetporto/project1/pkm1.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 4"
+            />
+            <img
+              src="assetporto/project1/pkm5.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 5"
+            />
+            <img
+              src="assetporto/project1/pkm6.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 6"
+            />
+            <img
+              src="assetporto/project1/pkm7.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 7"
+            />
+            <img
+              src="assetporto/project1/pkm8.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 8"
+            />
+            <img
+              src="assetporto/project1/pkm9.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 9"
+            />
+            <img
+              src="assetporto/project1/pkm11.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 11"
+            />
+            <img
+              src="assetporto/project1/pkm12.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 12"
+            />
+            <img
+              src="assetporto/project1/pkm13.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 13"
+            />
+            <img
+              src="assetporto/project1/pkm14.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 14"
+            />
+            <img
+              src="assetporto/project1/pkm15.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 15"
+            />
+            <img
+              src="assetporto/project1/pkm16.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 16"
+            />
+            <img
+              src="assetporto/project1/pkm17.jpeg"
+              alt="Web PKM SMA Negeri 1 Balige Screenshot 17"
+            />
+          </div>
+          <a href="#" class="see-more">Selengkapnya</a>
+        </div>
+      </div>
+      <div class="project-item animate-slide">
+        <h3>Web TracerStudy</h3>
+        <a
+          href="https://github.com/codenamevizz/k2 tracerstudy-project.git"
+          target="_blank"
+          ><i class="fab fa-github"></i>GitHub</a
+        >
+        <p>Web Developer</p>
+        <ul class="project-details">
+          <li>
+            Built a web application to track alumni data for educational
+            institutions
+          </li>
+          <li>
+            Created a user-friendly interface for data collection and analysis
+          </li>
+          <li>
+            Used React.js and Laravel to ensure scalability and performance
+          </li>
+        </ul>
+        <div class="image-container">
+          <div class="project-images" data-project="tracerstudy">
+            <img
+              src="assetporto/project2/img1.jpeg"
+              alt="Web TracerStudy Screenshot 1"
+              class="project-image"
+            />
+            <img
+              src="assetporto/project2/img2.jpeg"
+              alt="Web TracerStudy Screenshot 2"
+            />
+            <img
+              src="assetporto/project2/img3.jpeg"
+              alt="Web TracerStudy Screenshot 3"
+            />
+            <img
+              src="assetporto/project2/img4.jpeg"
+              alt="Web TracerStudy Screenshot 4"
+            />
+            <img
+              src="assetporto/project2/img5.jpeg"
+              alt="Web TracerStudy Screenshot 5"
+            />
+            <img
+              src="assetporto/project2/img6.jpeg"
+              alt="Web TracerStudy Screenshot 6"
+            />
+            <img
+              src="assetporto/project2/img7.jpeg"
+              alt="Web TracerStudy Screenshot 7"
+            />
+            <img
+              src="assetporto/project2/img8.jpeg"
+              alt="Web TracerStudy Screenshot 8"
+            />
+            <img
+              src="assetporto/project2/img9.jpeg"
+              alt="Web TracerStudy Screenshot 9"
+            />
+            <img
+              src="assetporto/project2/img10.jpeg"
+              alt="Web TracerStudy Screenshot 10"
+            />
+            <img
+              src="assetporto/project2/img11.jpeg"
+              alt="Web TracerStudy Screenshot 11"
+            />
+            <img
+              src="assetporto/project2/img12.jpeg"
+              alt="Web TracerStudy Screenshot 12"
+            />
+            <img
+              src="assetporto/project2/img13.jpeg"
+              alt="Web TracerStudy Screenshot 13"
+            />
+            <img
+              src="assetporto/project2/img14.jpeg"
+              alt="Web TracerStudy Screenshot 14"
+            />
+            <img
+              src="assetporto/project2/img15.jpeg"
+              alt="Web TracerStudy Screenshot 15"
+            />
+          </div>
+          <a href="#" class="see-more">Selengkapnya</a>
+        </div>
+      </div>
+      <div class="project-item animate-slide">
+        <h3>BookShelf App</h3>
+        <a href="https://github.com/Duilany/BookShelfApp.git" target="_blank"
+          ><i class="fab fa-github"></i>GitHub</a
+        >
+        <p>Developer</p>
+        <ul class="project-details">
+          <li>Designed an application to manage a personal book collection</li>
+          <li>Added features for adding, editing, and categorizing books</li>
+          <li>
+            Developed using JavaScript and local storage for data persistence
+          </li>
+        </ul>
+        <div class="image-container">
+          <div class="project-images" data-project="bookshelf">
+            <img
+              src="assetporto/project3.jpeg"
+              alt="BookShelf App Screenshot 1"
+              class="project-image"
+            />
+            <img
+              src="assetporto/project3.jpeg"
+              alt="BookShelf App Screenshot 2"
+            />
+          </div>
+          <a href="#" class="see-more">Selengkapnya</a>
+        </div>
+      </div>
+      <!-- Project: Cash Flow -->
+      <div class="project-item animate-slide">
+        <h3>Cash Flow</h3>
+        <a href="https://github.com/Duilany/CashFlow" target="_blank"
+          ><i class="fab fa-github"></i>GitHub</a
+        >
+        <p>Web Developer</p>
+        <ul class="project-details">
+          <li>
+            Developed a web application to track and manage financial cash flows
+          </li>
+          <li>
+            Built using React for the frontend, with SQLyog as the database
+            management system
+          </li>
+          <li>
+            Integrated Delcom API to fetch and display user profile details
+          </li>
+        </ul>
+        <div class="image-container">
+          <div class="project-images" data-project="cashflow">
+            <img
+              src="assetporto/project4/cashflow1.jpeg"
+              alt="Cash Flow Monthly Stats Screenshot"
+              class="project-image"
+            />
+            <img
+              src="assetporto/project4/cashflow2.jpeg"
+              alt="Cash Flow Daily Stats Screenshot"
+            />
+            <img
+              src="assetporto/project4/cashflow3.jpeg"
+              alt="Cash Flow Labels Screenshot"
+            />
+            <img
+              src="assetporto/project4/cashflow4.jpeg"
+              alt="Create Cash Flow Form Screenshot"
+            />
+            <img
+              src="assetporto/project4/cashflow5.jpeg"
+              alt="User Profile Screenshot"
+            />
+          </div>
+          <a href="#" class="see-more">Selengkapnya</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="content-section">
+      <h2 class="animate-fade">Skills</h2>
+      <div class="row skills-section">
+        <!-- Hard Skills -->
+        <div class="col-md-4">
+          <h3 class="animate-fade">Hard Skills</h3>
+          <div class="skill-item animate-slide">
+            <span
+              >HTML, CSS, JS, Laravel, PHP, SQL, Kotlin, C Language, Java,
+              Python, LISP</span
+            >
+          </div>
+        </div>
+
+        <!-- Software Skills -->
+        <div class="col-md-4">
+          <h3 class="animate-fade">Software Skills</h3>
+          <div class="skill-item animate-slide">
+            <span
+              >Visual Studio Code, Postman, SQLYog, Eclipse, IntelliJ IDEA,
+              NetBeans, Oracle VM VirtualBox</span
+            >
+          </div>
+        </div>
+
+        <!-- Soft Skills -->
+        <div class="col-md-4">
+          <h3 class="animate-fade">Soft Skills</h3>
+          <div class="skill-item animate-slide">
+            <span
+              >Communication, Collaboration, Project Management, Teamwork, Team
+              Leadership, Writing, Problem Solving</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section id="achievements" class="content-section">
+      <h2 class="animate-fade">Achievements</h2>
+      <div class="row certification-content">
+        <!-- Certificate 1: Junior Web Developer -->
+        <div class="col-md-4 mb-4">
+          <div
+            class="certificate-card animate-fade"
+            data-certificate="junior-web-developer"
+          >
+            <img
+              src="assetporto/certificate1.jpeg"
+              alt="Junior Web Developer Certificate"
+              class="certificate-img certificate-image"
+            />
+            <div class="certificate-info">
+              <h3>Junior Web Developer</h3>
+              <p>
+                Indonesian Professional Certification Authority | Issued July
+                2024
+              </p>
+              <a
+                href="assetporto/certificate1.pdf"
+                target="_blank"
+                class="btn btn-view-certificate"
+                download="Junior-Web-Developer-Certificate-2024.pdf"
+                >View Certificate <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+        <!-- Certificate 2: Samsung Innovation Campus -->
+        <div class="col-md-4 mb-4">
+          <div
+            class="certificate-card animate-fade"
+            data-certificate="samsung-innovation-campus"
+          >
+            <img
+              src="assetporto/certificate2.jpeg"
+              alt="Samsung Innovation Campus Certificate"
+              class="certificate-img certificate-image"
+            />
+            <div class="certificate-info">
+              <h3>Samsung Innovation Campus</h3>
+              <p>Hacktiv8 Indonesia | Issued December 2024</p>
+              <a
+                href="assetporto/certificate2.pdf"
+                target="_blank"
+                class="btn btn-view-certificate"
+                download="Samsung-Innovation-Campus-2024.pdf"
+                >View Certificate <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+        <!-- Certificate 3: PCA Membership -->
+        <div class="col-md-4 mb-4">
+          <div
+            class="certificate-card animate-fade"
+            data-certificate="pca-membership"
+          >
+            <img
+              src="assetporto/certificate3.jpeg"
+              alt="Certificate of Membership PCA (Program Cinta Almamater)"
+              class="certificate-img certificate-image"
+            />
+            <div class="certificate-info">
+              <h3>PCA Membership</h3>
+              <p>Del Institute of Technology</p>
+              <a
+                href="assetporto/certificate3.pdf"
+                target="_blank"
+                class="btn btn-view-certificate"
+                download="PCA-Membership-Certificate.pdf"
+                >View Certificate <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="animate-fade">
+      <div class="contact-info">
+        <a href="tel:+6287749274896"><i class="fas fa-phone"></i> Telephone</a>
+        |
+        <a href="mailto:samueldps12@gmail.com"
+          ><i class="fas fa-envelope"></i>Gmail</a
+        >
+        |
+        <a
+          href="https://linkedin.com/in/samuel-duilany-parreira-sibarani"
+          target="_blank"
+          ><i class="fab fa-linkedin"></i> LinkedIn</a
+        >
+        |
+        <a href="https://github.com/Duilany" target="_blank"
+          ><i class="fab fa-github"></i> GitHub</a
+        >
+      </div>
+    </footer>
+
+    <!-- Gallery Modal -->
+    <div class="gallery-modal" id="galleryModal">
+      <div class="gallery-content">
+        <button class="close-btn" id="closeGallery">×</button>
+        <h3 class="gallery-title" id="galleryTitle"></h3>
+        <button class="nav-btn prev-btn" id="prevImage">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <img id="galleryImage" src="" alt="Gallery Image" />
+        <button class="nav-btn next-btn" id="nextImage">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <p class="gallery-counter" id="galleryCounter"></p>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script>
+      // Background Animation with Moving Rectangles and Lines
+      const canvas = document.getElementById("backgroundCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Set canvas size to window size
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+
+      // Particle class for stars and rectangles
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 3 + 1; // Size for stars
+          this.speedX = Math.random() * 1 - 0.5;
+          this.speedY = Math.random() * 1 - 0.5;
+          this.isRectangle = Math.random() > 0.7; // 30% chance to be a rectangle
+          this.width = this.isRectangle ? Math.random() * 20 + 10 : this.size;
+          this.height = this.isRectangle ? Math.random() * 10 + 5 : this.size;
+          this.rotation = Math.random() * Math.PI * 2; // Random rotation for rectangles
+          this.rotationSpeed = Math.random() * 0.02 - 0.01; // Rotation speed
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.rotation += this.rotationSpeed;
+
+          // Bounce off edges
+          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        }
+
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.rotation);
+
+          if (this.isRectangle) {
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(
+              -this.width / 2,
+              -this.height / 2,
+              this.width,
+              this.height
+            );
+          } else {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.beginPath();
+            ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+        }
+      }
+
+      // Array to hold particles
+      const particlesArray = [];
+      const numberOfParticles = 100;
+
+      // Initialize particles
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+      }
+
+      // Connect particles with lines
+      function connectParticles() {
+        for (let i = 0; i < particlesArray.length; i++) {
+          for (let j = i + 1; j < particlesArray.length; j++) {
+            const dx = particlesArray[i].x - particlesArray[j].x;
+            const dy = particlesArray[i].y - particlesArray[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 100) {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / 100})`;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+              ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // Animation loop
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update and draw particles
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update();
+          particlesArray[i].draw();
+        }
+
+        // Draw connecting lines
+        connectParticles();
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      // JavaScript for Section Navigation and Gallery
+      function triggerAnimation(elements, animationClass) {
+        elements.forEach((el) => {
+          el.classList.remove(animationClass);
+          void el.offsetWidth; // Trigger reflow untuk memulai ulang animasi
+          el.classList.add(animationClass);
+        });
+      }
+
+      document
+        .querySelectorAll(".nav-link:not(.dropdown-toggle)")
+        .forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const sectionId = this.getAttribute("data-section");
+
+            document.querySelectorAll(".content-section").forEach((section) => {
+              section.classList.remove("active");
+            });
+
+            const targetSection = document.getElementById(sectionId);
+            targetSection.classList.add("active");
+
+            const fadeElements =
+              targetSection.querySelectorAll(".animate-fade");
+            const slideElements =
+              targetSection.querySelectorAll(".animate-slide");
+
+            triggerAnimation(fadeElements, "animate-fade");
+            triggerAnimation(slideElements, "animate-slide");
+          });
+        });
+
+      document
+        .querySelectorAll(".dropdown-item[data-experience]")
+        .forEach((item) => {
+          item.addEventListener("click", function (e) {
+            e.preventDefault();
+            const sectionId = this.getAttribute("data-section");
+            const experienceType = this.getAttribute("data-experience");
+
+            document.querySelectorAll(".content-section").forEach((section) => {
+              section.classList.remove("active");
+            });
+
+            const targetSection = document.getElementById(sectionId);
+            targetSection.classList.add("active");
+
+            document
+              .querySelectorAll(".experience-content")
+              .forEach((content) => {
+                content.classList.remove("active");
+              });
+
+            if (experienceType === "work") {
+              document
+                .getElementById("work-experience")
+                .classList.add("active");
+            } else if (experienceType === "organizational") {
+              document
+                .getElementById("organizational-experience")
+                .classList.add("active");
+            }
+
+            const fadeElements =
+              targetSection.querySelectorAll(".animate-fade");
+            const slideElements =
+              targetSection.querySelectorAll(".animate-slide");
+
+            triggerAnimation(fadeElements, "animate-fade");
+            triggerAnimation(slideElements, "animate-slide");
+          });
+        });
+
+      document
+        .querySelector("#experienceDropdown")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+        });
+
+      document.querySelectorAll(".experience-item").forEach((item) => {
+        item.addEventListener("click", function () {
+          const details = this.querySelector(".experience-details");
+          if (details) {
+            details.classList.toggle("active");
+          }
+        });
+      });
+
+      document.querySelectorAll(".project-image").forEach((image) => {
+        image.addEventListener("click", function (e) {
+          e.stopPropagation();
+          const projectItem = this.closest(".project-item");
+          const details = projectItem.querySelector(".project-details");
+          if (details) {
+            details.classList.toggle("active");
+          }
+        });
+      });
+
+      document.querySelectorAll(".project-item").forEach((item) => {
+        item.addEventListener("click", function (e) {
+          if (
+            !e.target.classList.contains("project-image") &&
+            !e.target.classList.contains("see-more")
+          ) {
+            const details = this.querySelector(".project-details");
+            if (details) {
+              details.classList.toggle("active");
+            }
+          }
+        });
+      });
+
+      const galleryModal = document.getElementById("galleryModal");
+      const galleryImage = document.getElementById("galleryImage");
+      const galleryTitle = document.getElementById("galleryTitle");
+      const galleryCounter = document.getElementById("galleryCounter");
+      const closeGallery = document.getElementById("closeGallery");
+      const prevImage = document.getElementById("prevImage");
+      const nextImage = document.getElementById("nextImage");
+
+      let currentImages = [];
+      let currentIndex = 0;
+
+      function updateCounter() {
+        galleryCounter.textContent = `Image ${currentIndex + 1} of ${
+          currentImages.length
+        }`;
+      }
+
+      function openGallery(images, startIndex, title) {
+        currentImages = images;
+        currentIndex = startIndex;
+        galleryImage.src = currentImages[currentIndex];
+        galleryTitle.textContent = title;
+        updateCounter();
+        galleryModal.classList.add("active");
+      }
+
+      closeGallery.addEventListener("click", () => {
+        galleryModal.classList.remove("active");
+        currentImages = [];
+        currentIndex = 0;
+        galleryTitle.textContent = "";
+        galleryCounter.textContent = "";
+      });
+
+      prevImage.addEventListener("click", () => {
+        currentIndex =
+          (currentIndex - 1 + currentImages.length) % currentImages.length;
+        galleryImage.src = currentImages[currentIndex];
+        updateCounter();
+      });
+
+      nextImage.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        galleryImage.src = currentImages[currentIndex];
+        updateCounter();
+      });
+
+      galleryModal.addEventListener("click", (e) => {
+        if (e.target === galleryModal) {
+          galleryModal.classList.remove("active");
+          currentImages = [];
+          currentIndex = 0;
+          galleryTitle.textContent = "";
+          galleryCounter.textContent = "";
+        }
+      });
+
+      document.querySelectorAll(".see-more").forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const projectItem = this.closest(".project-item");
+          const images = projectItem
+            .querySelector(".project-images")
+            .querySelectorAll("img");
+          const imageSources = Array.from(images).map((img) => img.src);
+          const details = projectItem.querySelector(".project-details");
+          const projectTitle = projectItem.querySelector("h3").textContent;
+
+          openGallery(imageSources, 0, projectTitle);
+
+          if (details) {
+            details.classList.add("active");
+          }
+        });
+      });
+
+      // Add click event for certificate images to open in gallery modal
+      document.querySelectorAll(".certificate-image").forEach((image) => {
+        image.addEventListener("click", function (e) {
+          e.preventDefault();
+          const certificateCard = this.closest(".certificate-card");
+          const certificateId =
+            certificateCard.getAttribute("data-certificate");
+          const images = certificateCard.querySelectorAll(".certificate-img");
+          const imageSources = Array.from(images).map((img) => img.src);
+          const certificateTitle =
+            certificateCard.querySelector("h3").textContent;
+
+          openGallery(imageSources, 0, certificateTitle);
+        });
+      });
+
+      // Error handling for certificate links
+      document.querySelectorAll(".btn-view-certificate").forEach((link) => {
+        link.addEventListener("click", async (e) => {
+          const url = link.getAttribute("href");
+
+          // If the browser opens the PDF directly, the download attribute will suggest the custom name
+          // No need to prevent default behavior unless there’s an actual error
+          try {
+            const response = await fetch(url, { method: "HEAD" });
+            if (!response.ok) {
+              e.preventDefault();
+              alert(
+                "Certificate not found. Please ensure the file is placed in the correct directory (assetporto/)."
+              );
+            }
+          } catch (error) {
+            e.preventDefault();
+            alert("Error accessing the certificate. Please try again later.");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
